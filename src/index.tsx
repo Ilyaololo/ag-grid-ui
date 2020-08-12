@@ -9,7 +9,7 @@ import { App } from './App';
 
 configure({
   axios: axios.create({
-    baseURL: 'http://localhost:3000/api',
+    baseURL: 'https://ag-grid-core.herokuapp.com',
     timeout: 30 * 1000,
     withCredentials: true,
   })
