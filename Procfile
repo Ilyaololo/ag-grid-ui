@@ -1,2 +1,2 @@
-web: serve --listen $PORT dist/
+web: serve --listen $PORT build/
 
