@@ -38,6 +38,15 @@
   dependencies:
     "@ag-grid-community/core" "~23.2.0"
 
+"@ag-grid-enterprise/filter-tool-panel@^23.2.1":
+  version "23.2.1"
+  resolved "https://registry.yarnpkg.com/@ag-grid-enterprise/filter-tool-panel/-/filter-tool-panel-23.2.1.tgz#6929af4cd23390593d5a2a44739ccbababa0123a"
+  integrity sha512-qXIXRUEnEAdaD/4zfXEwQaabV2NDpHBnDKrKZWtrAKYp0cw3ONwixbL97i3lC/ojXf2qx07COKbxOVU+x0QGaw==
+  dependencies:
+    "@ag-grid-community/core" "~23.2.0"
+    "@ag-grid-enterprise/core" "~23.2.0"
+    "@ag-grid-enterprise/side-bar" "~23.2.0"
+
 "@ag-grid-enterprise/menu@^23.2.1":
   version "23.2.1"
   resolved "https://registry.yarnpkg.com/@ag-grid-enterprise/menu/-/menu-23.2.1.tgz#e27a619730bc8cf787080b5510fad332c1b9d51d"
@@ -51,6 +60,14 @@
   version "23.2.1"
   resolved "https://registry.yarnpkg.com/@ag-grid-enterprise/row-grouping/-/row-grouping-23.2.1.tgz#362f4510ab32562d61cabe84c2597047ff37c27f"
   integrity sha512-a4IGVGIgHjombJ9IeThZC30tt6OtKPGqOC5oav0I/hvFiBd3X7xd8OQAcBFWAI4PmaNHspqQHHibz8C++vRe0Q==
+  dependencies:
+    "@ag-grid-community/core" "~23.2.0"
+    "@ag-grid-enterprise/core" "~23.2.0"
+
+"@ag-grid-enterprise/set-filter@^23.2.1":
+  version "23.2.1"
+  resolved "https://registry.yarnpkg.com/@ag-grid-enterprise/set-filter/-/set-filter-23.2.1.tgz#473a3f76cf19010ea3c8f11b5fb7325bdcf3fe47"
+  integrity sha512-bYNhuq8CfKiTDBzOg097HuuT+1PFbf7BAIeAuOkl87b9Ctu4iIKhRvslZqC/b+GJgr2pK5Vw+gBKy07np0FplQ==
   dependencies:
     "@ag-grid-community/core" "~23.2.0"
     "@ag-grid-enterprise/core" "~23.2.0"
