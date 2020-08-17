@@ -1,11 +1,13 @@
-import React, { useCallback, useRef } from 'react';
+import React, { useCallback, useRef, useMemo } from 'react';
 import useRequest from 'axios-hooks';
 
 import { AgGridReact } from '@ag-grid-community/react';
 import { ClientSideRowModelModule } from '@ag-grid-community/client-side-row-model';
 import { ColumnsToolPanelModule } from '@ag-grid-enterprise/column-tool-panel';
+import { CsvExportModule } from '@ag-grid-community/csv-export';
+import { ExcelExportModule } from '@ag-grid-enterprise/excel-export';
 import { FiltersToolPanelModule } from '@ag-grid-enterprise/filter-tool-panel';
-import { GridReadyEvent, ColDef, ColGroupDef, Module, GridApi, ColumnApi } from "@ag-grid-community/core";
+import { ColDef, ColGroupDef, ColumnApi, GridApi, GridReadyEvent, Module, ProcessRowGroupForExportParams } from "@ag-grid-community/core";
 import { MenuModule } from '@ag-grid-enterprise/menu';
 import { RowGroupingModule } from '@ag-grid-enterprise/row-grouping';
 import { SetFilterModule } from '@ag-grid-enterprise/set-filter';
@@ -130,7 +132,7 @@ const columnDefs: Array<ColDef | ColGroupDef> = [
 ];
 
 const autoGroupColumnDef: ColDef = {
-  minWidth: 400
+  minWidth: 400,
 }
 
 const defaultColDef: ColDef = {
@@ -144,6 +146,8 @@ const defaultColDef: ColDef = {
 const modules: Module[] = [
   ClientSideRowModelModule,
   ColumnsToolPanelModule,
+  CsvExportModule,
+  ExcelExportModule,
   FiltersToolPanelModule,
   MenuModule,
   RowGroupingModule,
@@ -156,6 +160,10 @@ export const App: React.FC = () => {
 
   const [{ data }, refetch] = useRequest({}, { manual: true });
 
+  const rowData = useMemo(() => {
+    return data?.items ?? [];
+  }, [data])
+
   const onGridReady = useCallback(async (event: GridReadyEvent) => {
     try {
       columnApi.current = event.columnApi;
@@ -167,26 +175,53 @@ export const App: React.FC = () => {
           skip: 0,
         }
       });
+
+      event.api.forEachNode((node) => {
+        node.expanded = true;
+      });
+
+      event.api.onGroupExpandedOrCollapsed();
     } catch (err) {
       console.error(err);
     }
   }, [refetch]);
 
-  const onClickDownloadExcel = useCallback(() => {
+  const processRowGroupCallback = useCallback((params: ProcessRowGroupForExportParams) => {
+    let indent = '--';
+    let node = params.node;
+    let label = node.key;
+
+    if (!node.parent?.parent) {
+      return label;
+    }
+
+    label = '> ' + label;
+
+    while (node.parent?.parent) {
+      label = indent + label;
+      node = node.parent;
+    }
+
+    return label;
+  }, [])
+
+  const onClickExportAsExcel = useCallback(() => {
     if (gridApi.current) {
       gridApi.current.exportDataAsExcel({
-        //
+        columnGroups: true,
+        processRowGroupCallback,
       });
     }
-  }, []);
+  }, [processRowGroupCallback]);
 
-  const onClickDownloadCsv = useCallback(() => {
+  const onClickExportAsCsv = useCallback(() => {
     if (gridApi.current) {
       gridApi.current.exportDataAsCsv({
-        //
+        columnGroups: true,
+        processRowGroupCallback,
       });
     }
-  }, []);
+  }, [processRowGroupCallback]);
 
   return (
     <>
@@ -199,7 +234,7 @@ export const App: React.FC = () => {
           modules={modules}
           onGridReady={onGridReady}
           pivotMode={true}
-          rowData={data?.items ?? []}
+          rowData={rowData}
 
           debug={true}
           pivotPanelShow="always"
@@ -208,10 +243,10 @@ export const App: React.FC = () => {
         />
       </div>
       <div>
-        <button type="button" onClick={onClickDownloadExcel}>
+        <button type="button" disabled={!rowData.length} onClick={onClickExportAsExcel}>
           Export to Excel
         </button>
-        <button type="button" onClick={onClickDownloadCsv}>
+        <button type="button" disabled={!rowData.length} onClick={onClickExportAsCsv}>
           Export to Csv
         </button>
       </div>
